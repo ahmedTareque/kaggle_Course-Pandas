@@ -4,6 +4,7 @@
 ## Pandas
 
 Solve short hands-on challenges to perfect your data manipulation skills.
+[Kaggle Pandas Course Link](https://www.kaggle.com/learn/pandas)
 
 ### Lessons
 
@@ -15,6 +16,6 @@ Solve short hands-on challenges to perfect your data manipulation skills.
 * Renaming and Combining
 
 Instructor
-Aleksey Bilogur
+[Aleksey Bilogur](https://www.kaggle.com/residentmario)
 
 ## Certificate
