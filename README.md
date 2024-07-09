@@ -20,3 +20,5 @@ Instructor
 [Aleksey Bilogur](https://www.kaggle.com/residentmario)
 
 ## Certificate
+
+![Certificate](Ahmed%20Tareque%20-%20Pandas.png)
