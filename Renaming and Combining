@@ -1,0 +1,907 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "19f2d89d",
+   "metadata": {
+    "papermill": {
+     "duration": 0.006252,
+     "end_time": "2024-07-09T23:33:36.354221",
+     "exception": false,
+     "start_time": "2024-07-09T23:33:36.347969",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "**This notebook is an exercise in the [Pandas](https://www.kaggle.com/learn/pandas) course.  You can reference the tutorial at [this link](https://www.kaggle.com/residentmario/renaming-and-combining).**\n",
+    "\n",
+    "---\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "538d9188",
+   "metadata": {
+    "papermill": {
+     "duration": 0.004935,
+     "end_time": "2024-07-09T23:33:36.364522",
+     "exception": false,
+     "start_time": "2024-07-09T23:33:36.359587",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "# Introduction\n",
+    "\n",
+    "Run the following cell to load your data and some utility functions."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "e0920d1c",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-09T23:33:36.376876Z",
+     "iopub.status.busy": "2024-07-09T23:33:36.376460Z",
+     "iopub.status.idle": "2024-07-09T23:33:41.794583Z",
+     "shell.execute_reply": "2024-07-09T23:33:41.793160Z"
+    },
+    "papermill": {
+     "duration": 5.427725,
+     "end_time": "2024-07-09T23:33:41.797639",
+     "exception": false,
+     "start_time": "2024-07-09T23:33:36.369914",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Setup complete.\n"
+     ]
+    }
+   ],
+   "source": [
+    "import pandas as pd\n",
+    "\n",
+    "reviews = pd.read_csv(\"../input/wine-reviews/winemag-data-130k-v2.csv\", index_col=0)\n",
+    "\n",
+    "from learntools.core import binder; binder.bind(globals())\n",
+    "from learntools.pandas.renaming_and_combining import *\n",
+    "print(\"Setup complete.\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "0729725d",
+   "metadata": {
+    "papermill": {
+     "duration": 0.005531,
+     "end_time": "2024-07-09T23:33:41.809065",
+     "exception": false,
+     "start_time": "2024-07-09T23:33:41.803534",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "# Exercises\n",
+    "\n",
+    "View the first several lines of your data by running the cell below:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "5cba0550",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-09T23:33:41.822874Z",
+     "iopub.status.busy": "2024-07-09T23:33:41.822471Z",
+     "iopub.status.idle": "2024-07-09T23:33:41.847881Z",
+     "shell.execute_reply": "2024-07-09T23:33:41.846518Z"
+    },
+    "papermill": {
+     "duration": 0.035389,
+     "end_time": "2024-07-09T23:33:41.850572",
+     "exception": false,
+     "start_time": "2024-07-09T23:33:41.815183",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>country</th>\n",
+       "      <th>description</th>\n",
+       "      <th>designation</th>\n",
+       "      <th>points</th>\n",
+       "      <th>price</th>\n",
+       "      <th>province</th>\n",
+       "      <th>region_1</th>\n",
+       "      <th>region_2</th>\n",
+       "      <th>taster_name</th>\n",
+       "      <th>taster_twitter_handle</th>\n",
+       "      <th>title</th>\n",
+       "      <th>variety</th>\n",
+       "      <th>winery</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>Italy</td>\n",
+       "      <td>Aromas include tropical fruit, broom, brimston...</td>\n",
+       "      <td>Vulkà Bianco</td>\n",
+       "      <td>87</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>Sicily &amp; Sardinia</td>\n",
+       "      <td>Etna</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>Kerin O’Keefe</td>\n",
+       "      <td>@kerinokeefe</td>\n",
+       "      <td>Nicosia 2013 Vulkà Bianco  (Etna)</td>\n",
+       "      <td>White Blend</td>\n",
+       "      <td>Nicosia</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>Portugal</td>\n",
+       "      <td>This is ripe and fruity, a wine that is smooth...</td>\n",
+       "      <td>Avidagos</td>\n",
+       "      <td>87</td>\n",
+       "      <td>15.0</td>\n",
+       "      <td>Douro</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>Roger Voss</td>\n",
+       "      <td>@vossroger</td>\n",
+       "      <td>Quinta dos Avidagos 2011 Avidagos Red (Douro)</td>\n",
+       "      <td>Portuguese Red</td>\n",
+       "      <td>Quinta dos Avidagos</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>US</td>\n",
+       "      <td>Tart and snappy, the flavors of lime flesh and...</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>87</td>\n",
+       "      <td>14.0</td>\n",
+       "      <td>Oregon</td>\n",
+       "      <td>Willamette Valley</td>\n",
+       "      <td>Willamette Valley</td>\n",
+       "      <td>Paul Gregutt</td>\n",
+       "      <td>@paulgwine</td>\n",
+       "      <td>Rainstorm 2013 Pinot Gris (Willamette Valley)</td>\n",
+       "      <td>Pinot Gris</td>\n",
+       "      <td>Rainstorm</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>US</td>\n",
+       "      <td>Pineapple rind, lemon pith and orange blossom ...</td>\n",
+       "      <td>Reserve Late Harvest</td>\n",
+       "      <td>87</td>\n",
+       "      <td>13.0</td>\n",
+       "      <td>Michigan</td>\n",
+       "      <td>Lake Michigan Shore</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>Alexander Peartree</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>St. Julian 2013 Reserve Late Harvest Riesling ...</td>\n",
+       "      <td>Riesling</td>\n",
+       "      <td>St. Julian</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>US</td>\n",
+       "      <td>Much like the regular bottling from 2012, this...</td>\n",
+       "      <td>Vintner's Reserve Wild Child Block</td>\n",
+       "      <td>87</td>\n",
+       "      <td>65.0</td>\n",
+       "      <td>Oregon</td>\n",
+       "      <td>Willamette Valley</td>\n",
+       "      <td>Willamette Valley</td>\n",
+       "      <td>Paul Gregutt</td>\n",
+       "      <td>@paulgwine</td>\n",
+       "      <td>Sweet Cheeks 2012 Vintner's Reserve Wild Child...</td>\n",
+       "      <td>Pinot Noir</td>\n",
+       "      <td>Sweet Cheeks</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "    country                                        description  \\\n",
+       "0     Italy  Aromas include tropical fruit, broom, brimston...   \n",
+       "1  Portugal  This is ripe and fruity, a wine that is smooth...   \n",
+       "2        US  Tart and snappy, the flavors of lime flesh and...   \n",
+       "3        US  Pineapple rind, lemon pith and orange blossom ...   \n",
+       "4        US  Much like the regular bottling from 2012, this...   \n",
+       "\n",
+       "                          designation  points  price           province  \\\n",
+       "0                        Vulkà Bianco      87    NaN  Sicily & Sardinia   \n",
+       "1                            Avidagos      87   15.0              Douro   \n",
+       "2                                 NaN      87   14.0             Oregon   \n",
+       "3                Reserve Late Harvest      87   13.0           Michigan   \n",
+       "4  Vintner's Reserve Wild Child Block      87   65.0             Oregon   \n",
+       "\n",
+       "              region_1           region_2         taster_name  \\\n",
+       "0                 Etna                NaN       Kerin O’Keefe   \n",
+       "1                  NaN                NaN          Roger Voss   \n",
+       "2    Willamette Valley  Willamette Valley        Paul Gregutt   \n",
+       "3  Lake Michigan Shore                NaN  Alexander Peartree   \n",
+       "4    Willamette Valley  Willamette Valley        Paul Gregutt   \n",
+       "\n",
+       "  taster_twitter_handle                                              title  \\\n",
+       "0          @kerinokeefe                  Nicosia 2013 Vulkà Bianco  (Etna)   \n",
+       "1            @vossroger      Quinta dos Avidagos 2011 Avidagos Red (Douro)   \n",
+       "2           @paulgwine       Rainstorm 2013 Pinot Gris (Willamette Valley)   \n",
+       "3                   NaN  St. Julian 2013 Reserve Late Harvest Riesling ...   \n",
+       "4           @paulgwine   Sweet Cheeks 2012 Vintner's Reserve Wild Child...   \n",
+       "\n",
+       "          variety               winery  \n",
+       "0     White Blend              Nicosia  \n",
+       "1  Portuguese Red  Quinta dos Avidagos  \n",
+       "2      Pinot Gris            Rainstorm  \n",
+       "3        Riesling           St. Julian  \n",
+       "4      Pinot Noir         Sweet Cheeks  "
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "reviews.head()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "361c33bc",
+   "metadata": {
+    "papermill": {
+     "duration": 0.00541,
+     "end_time": "2024-07-09T23:33:41.861792",
+     "exception": false,
+     "start_time": "2024-07-09T23:33:41.856382",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "## 1.\n",
+    "`region_1` and `region_2` are pretty uninformative names for locale columns in the dataset. Create a copy of `reviews` with these columns renamed to `region` and `locale`, respectively."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "0eb57190",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-09T23:33:41.874743Z",
+     "iopub.status.busy": "2024-07-09T23:33:41.874360Z",
+     "iopub.status.idle": "2024-07-09T23:33:41.897554Z",
+     "shell.execute_reply": "2024-07-09T23:33:41.896398Z"
+    },
+    "papermill": {
+     "duration": 0.032597,
+     "end_time": "2024-07-09T23:33:41.900096",
+     "exception": false,
+     "start_time": "2024-07-09T23:33:41.867499",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "application/javascript": [
+       "parent.postMessage({\"jupyterEvent\": \"custom.exercise_interaction\", \"data\": {\"outcomeType\": 1, \"valueTowardsCompletion\": 0.25, \"interactionType\": 1, \"questionType\": 1, \"questionId\": \"1_RenameCols\", \"learnToolsVersion\": \"0.3.4\", \"failureMessage\": \"\", \"exceptionClass\": \"\", \"trace\": \"\"}}, \"*\")"
+      ],
+      "text/plain": [
+       "<IPython.core.display.Javascript object>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "data": {
+      "text/markdown": [
+       "<span style=\"color:#33cc33\">Correct</span>"
+      ],
+      "text/plain": [
+       "Correct"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "# Your code here\n",
+    "renamed = reviews.rename(columns={'region_1': 'region', 'region_2': 'locale'})\n",
+    "\n",
+    "# Check your answer\n",
+    "q1.check()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "a0012bfc",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-09T23:33:41.914269Z",
+     "iopub.status.busy": "2024-07-09T23:33:41.913885Z",
+     "iopub.status.idle": "2024-07-09T23:33:41.918902Z",
+     "shell.execute_reply": "2024-07-09T23:33:41.917687Z"
+    },
+    "papermill": {
+     "duration": 0.015216,
+     "end_time": "2024-07-09T23:33:41.921359",
+     "exception": false,
+     "start_time": "2024-07-09T23:33:41.906143",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "#q1.hint()\n",
+    "#q1.solution()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "4e851f2b",
+   "metadata": {
+    "papermill": {
+     "duration": 0.005831,
+     "end_time": "2024-07-09T23:33:41.933306",
+     "exception": false,
+     "start_time": "2024-07-09T23:33:41.927475",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "\n",
+    "Set the index name in the dataset to `wines`."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "b4549d94",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-09T23:33:41.949219Z",
+     "iopub.status.busy": "2024-07-09T23:33:41.947928Z",
+     "iopub.status.idle": "2024-07-09T23:33:41.972199Z",
+     "shell.execute_reply": "2024-07-09T23:33:41.970999Z"
+    },
+    "papermill": {
+     "duration": 0.035744,
+     "end_time": "2024-07-09T23:33:41.975187",
+     "exception": false,
+     "start_time": "2024-07-09T23:33:41.939443",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "application/javascript": [
+       "parent.postMessage({\"jupyterEvent\": \"custom.exercise_interaction\", \"data\": {\"outcomeType\": 1, \"valueTowardsCompletion\": 0.25, \"interactionType\": 1, \"questionType\": 1, \"questionId\": \"2_RenameIndex\", \"learnToolsVersion\": \"0.3.4\", \"failureMessage\": \"\", \"exceptionClass\": \"\", \"trace\": \"\"}}, \"*\")"
+      ],
+      "text/plain": [
+       "<IPython.core.display.Javascript object>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "data": {
+      "text/markdown": [
+       "<span style=\"color:#33cc33\">Correct</span>"
+      ],
+      "text/plain": [
+       "Correct"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "reindexed = reviews.rename_axis(\"wines\", axis='rows')\n",
+    "\n",
+    "# Check your answer\n",
+    "q2.check()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "551e0e19",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-09T23:33:41.990680Z",
+     "iopub.status.busy": "2024-07-09T23:33:41.990284Z",
+     "iopub.status.idle": "2024-07-09T23:33:41.995563Z",
+     "shell.execute_reply": "2024-07-09T23:33:41.994259Z"
+    },
+    "papermill": {
+     "duration": 0.016464,
+     "end_time": "2024-07-09T23:33:41.998263",
+     "exception": false,
+     "start_time": "2024-07-09T23:33:41.981799",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "#q2.hint()\n",
+    "#q2.solution()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "4d503556",
+   "metadata": {
+    "papermill": {
+     "duration": 0.005928,
+     "end_time": "2024-07-09T23:33:42.010770",
+     "exception": false,
+     "start_time": "2024-07-09T23:33:42.004842",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "## 3.\n",
+    "The [Things on Reddit](https://www.kaggle.com/residentmario/things-on-reddit/data) dataset includes product links from a selection of top-ranked forums (\"subreddits\") on reddit.com. Run the cell below to load a dataframe of products mentioned on the */r/gaming* subreddit and another dataframe for products mentioned on the *r//movies* subreddit."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "2cd6dd37",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-09T23:33:42.025568Z",
+     "iopub.status.busy": "2024-07-09T23:33:42.024547Z",
+     "iopub.status.idle": "2024-07-09T23:33:42.039922Z",
+     "shell.execute_reply": "2024-07-09T23:33:42.038671Z"
+    },
+    "papermill": {
+     "duration": 0.026017,
+     "end_time": "2024-07-09T23:33:42.043032",
+     "exception": false,
+     "start_time": "2024-07-09T23:33:42.017015",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "gaming_products = pd.read_csv(\"../input/things-on-reddit/top-things/top-things/reddits/g/gaming.csv\")\n",
+    "gaming_products['subreddit'] = \"r/gaming\"\n",
+    "movie_products = pd.read_csv(\"../input/things-on-reddit/top-things/top-things/reddits/m/movies.csv\")\n",
+    "movie_products['subreddit'] = \"r/movies\""
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "cf49af80",
+   "metadata": {
+    "papermill": {
+     "duration": 0.006298,
+     "end_time": "2024-07-09T23:33:42.056808",
+     "exception": false,
+     "start_time": "2024-07-09T23:33:42.050510",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "Create a `DataFrame` of products mentioned on *either* subreddit."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "id": "50e14df6",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-09T23:33:42.071670Z",
+     "iopub.status.busy": "2024-07-09T23:33:42.071136Z",
+     "iopub.status.idle": "2024-07-09T23:33:42.084100Z",
+     "shell.execute_reply": "2024-07-09T23:33:42.082981Z"
+    },
+    "papermill": {
+     "duration": 0.023332,
+     "end_time": "2024-07-09T23:33:42.086437",
+     "exception": false,
+     "start_time": "2024-07-09T23:33:42.063105",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "application/javascript": [
+       "parent.postMessage({\"jupyterEvent\": \"custom.exercise_interaction\", \"data\": {\"outcomeType\": 1, \"valueTowardsCompletion\": 0.25, \"interactionType\": 1, \"questionType\": 2, \"questionId\": \"3_ConcatReddit\", \"learnToolsVersion\": \"0.3.4\", \"failureMessage\": \"\", \"exceptionClass\": \"\", \"trace\": \"\"}}, \"*\")"
+      ],
+      "text/plain": [
+       "<IPython.core.display.Javascript object>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "data": {
+      "text/markdown": [
+       "<span style=\"color:#33cc33\">Correct</span>"
+      ],
+      "text/plain": [
+       "Correct"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "combined_products = pd.concat([gaming_products, movie_products])\n",
+    "\n",
+    "# Check your answer\n",
+    "q3.check()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "id": "e0b44633",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-09T23:33:42.102363Z",
+     "iopub.status.busy": "2024-07-09T23:33:42.101971Z",
+     "iopub.status.idle": "2024-07-09T23:33:42.106948Z",
+     "shell.execute_reply": "2024-07-09T23:33:42.105793Z"
+    },
+    "papermill": {
+     "duration": 0.015163,
+     "end_time": "2024-07-09T23:33:42.109254",
+     "exception": false,
+     "start_time": "2024-07-09T23:33:42.094091",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "#q3.hint()\n",
+    "#q3.solution()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "cced318c",
+   "metadata": {
+    "papermill": {
+     "duration": 0.006231,
+     "end_time": "2024-07-09T23:33:42.122823",
+     "exception": false,
+     "start_time": "2024-07-09T23:33:42.116592",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "## 4.\n",
+    "The [Powerlifting Database](https://www.kaggle.com/open-powerlifting/powerlifting-database) dataset on Kaggle includes one CSV table for powerlifting meets and a separate one for powerlifting competitors. Run the cell below to load these datasets into dataframes:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "id": "4f8dfab9",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-09T23:33:42.138301Z",
+     "iopub.status.busy": "2024-07-09T23:33:42.137204Z",
+     "iopub.status.idle": "2024-07-09T23:33:43.010275Z",
+     "shell.execute_reply": "2024-07-09T23:33:43.008943Z"
+    },
+    "papermill": {
+     "duration": 0.883991,
+     "end_time": "2024-07-09T23:33:43.013344",
+     "exception": false,
+     "start_time": "2024-07-09T23:33:42.129353",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "powerlifting_meets = pd.read_csv(\"../input/powerlifting-database/meets.csv\")\n",
+    "powerlifting_competitors = pd.read_csv(\"../input/powerlifting-database/openpowerlifting.csv\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "2904fe10",
+   "metadata": {
+    "papermill": {
+     "duration": 0.00622,
+     "end_time": "2024-07-09T23:33:43.026251",
+     "exception": false,
+     "start_time": "2024-07-09T23:33:43.020031",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "Both tables include references to a `MeetID`, a unique key for each meet (competition) included in the database. Using this, generate a dataset combining the two tables into one."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "id": "87339a3c",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-09T23:33:43.041446Z",
+     "iopub.status.busy": "2024-07-09T23:33:43.041044Z",
+     "iopub.status.idle": "2024-07-09T23:33:44.126323Z",
+     "shell.execute_reply": "2024-07-09T23:33:44.124756Z"
+    },
+    "papermill": {
+     "duration": 1.096529,
+     "end_time": "2024-07-09T23:33:44.129395",
+     "exception": false,
+     "start_time": "2024-07-09T23:33:43.032866",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "application/javascript": [
+       "parent.postMessage({\"jupyterEvent\": \"custom.exercise_interaction\", \"data\": {\"outcomeType\": 1, \"valueTowardsCompletion\": 0.25, \"interactionType\": 1, \"questionType\": 2, \"questionId\": \"4_JoinLifting\", \"learnToolsVersion\": \"0.3.4\", \"failureMessage\": \"\", \"exceptionClass\": \"\", \"trace\": \"\"}}, \"*\")"
+      ],
+      "text/plain": [
+       "<IPython.core.display.Javascript object>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "data": {
+      "text/markdown": [
+       "<span style=\"color:#33cc33\">Correct</span>"
+      ],
+      "text/plain": [
+       "Correct"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "left = powerlifting_meets.set_index(['MeetID'])\n",
+    "right = powerlifting_competitors.set_index(['MeetID'])\n",
+    "\n",
+    "powerlifting_combined = left.join(right, lsuffix='_MEET', rsuffix='_COMPITORS')\n",
+    "\n",
+    "\n",
+    "\n",
+    "# Check your answer\n",
+    "q4.check()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "id": "f3635491",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-07-09T23:33:44.145521Z",
+     "iopub.status.busy": "2024-07-09T23:33:44.145142Z",
+     "iopub.status.idle": "2024-07-09T23:33:44.149960Z",
+     "shell.execute_reply": "2024-07-09T23:33:44.148663Z"
+    },
+    "papermill": {
+     "duration": 0.015504,
+     "end_time": "2024-07-09T23:33:44.152505",
+     "exception": false,
+     "start_time": "2024-07-09T23:33:44.137001",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "#q4.hint()\n",
+    "#q4.solution()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "862acee4",
+   "metadata": {
+    "papermill": {
+     "duration": 0.007155,
+     "end_time": "2024-07-09T23:33:44.167952",
+     "exception": false,
+     "start_time": "2024-07-09T23:33:44.160797",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "# Congratulations!\n",
+    "\n",
+    "You've finished the Pandas micro-course.  Many data scientists feel efficiency with Pandas is the most useful and practical skill they have, because it allows you to progress quickly in any project you have.\n",
+    "\n",
+    "If you'd like to apply your new skills to examining geospatial data, you're encouraged to check out our **[Geospatial Analysis](https://www.kaggle.com/learn/geospatial-analysis)** micro-course.\n",
+    "\n",
+    "You can also take advantage of your Pandas skills by entering a **[Kaggle Competition](https://www.kaggle.com/competitions)** or by answering a question you find interesting using **[Kaggle Datasets](https://www.kaggle.com/datasets)**."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "4f9f8393",
+   "metadata": {
+    "papermill": {
+     "duration": 0.007269,
+     "end_time": "2024-07-09T23:33:44.184332",
+     "exception": false,
+     "start_time": "2024-07-09T23:33:44.177063",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "---\n",
+    "\n",
+    "\n",
+    "\n",
+    "\n",
+    "*Have questions or comments? Visit the [course discussion forum](https://www.kaggle.com/learn/pandas/discussion) to chat with other learners.*"
+   ]
+  }
+ ],
+ "metadata": {
+  "kaggle": {
+   "accelerator": "none",
+   "dataSources": [
+    {
+     "datasetId": 655,
+     "sourceId": 1252,
+     "sourceType": "datasetVersion"
+    },
+    {
+     "datasetId": 2321,
+     "sourceId": 3919,
+     "sourceType": "datasetVersion"
+    },
+    {
+     "datasetId": 2894,
+     "sourceId": 4877,
+     "sourceType": "datasetVersion"
+    },
+    {
+     "datasetId": 3491,
+     "sourceId": 5624,
+     "sourceType": "datasetVersion"
+    },
+    {
+     "datasetId": 1442,
+     "sourceId": 8172,
+     "sourceType": "datasetVersion"
+    },
+    {
+     "datasetId": 9366,
+     "sourceId": 13206,
+     "sourceType": "datasetVersion"
+    },
+    {
+     "datasetId": 179555,
+     "sourceId": 403916,
+     "sourceType": "datasetVersion"
+    },
+    {
+     "datasetId": 4549,
+     "sourceId": 466349,
+     "sourceType": "datasetVersion"
+    },
+    {
+     "datasetId": 2478,
+     "sourceId": 1151655,
+     "sourceType": "datasetVersion"
+    },
+    {
+     "datasetId": 10128,
+     "sourceId": 5438389,
+     "sourceType": "datasetVersion"
+    }
+   ],
+   "isGpuEnabled": false,
+   "isInternetEnabled": false,
+   "language": "python",
+   "sourceType": "notebook"
+  },
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.10.13"
+  },
+  "papermill": {
+   "default_parameters": {},
+   "duration": 11.555656,
+   "end_time": "2024-07-09T23:33:44.812691",
+   "environment_variables": {},
+   "exception": null,
+   "input_path": "__notebook__.ipynb",
+   "output_path": "__notebook__.ipynb",
+   "parameters": {},
+   "start_time": "2024-07-09T23:33:33.257035",
+   "version": "2.5.0"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
